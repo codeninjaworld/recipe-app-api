@@ -40,7 +40,7 @@ from recipe import serializers
 )
 class RecipeViewSet(viewsets.ModelViewSet):
     """ View for manager recipe APIs """
-    serializer_class = serializers.RecipeSerializer
+    serializer_class = serializers.RecipeDetailSerializer
     queryset = Recipe.objects.all()
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -73,7 +73,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         elif self.action == 'upload_image':
             return serializers.RecipeImageSerializer
         
-        return serializers.RecipeDetailSerializer
+        return self.serializer_class
 
     def perform_create(self, serializer):
         """ create a new recipe """
@@ -89,7 +89,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         
-        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 @extend_schema_view(
     list=extend_schema(
@@ -117,9 +117,9 @@ class BaseRecipeAttrViewSet(
             int(self.request.query_params.get('assigned_only', 0))
         )
         queryset = self.queryset
-        
+
         if assigned_only:
-            queryset.filter(recipe__isnull=False)
+            queryset = queryset.filter(recipe__isnull=False)
         
         return queryset.filter(
             user=self.request.user
