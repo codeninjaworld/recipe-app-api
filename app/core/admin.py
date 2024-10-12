@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from core import models
 
+
 class UserAdmin(BaseUserAdmin):
     """ Define the admin page for users """
 
@@ -30,7 +31,7 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields':(
+            'fields': (
                 'email',
                 'name',
                 'password1',
@@ -42,6 +43,8 @@ class UserAdmin(BaseUserAdmin):
         }),
     )
 
+
 admin.site.register(models.User, UserAdmin)
-
-
+admin.site.register(models.Recipe)
+admin.site.register(models.Tag)
+admin.site.register(models.Ingredient)
