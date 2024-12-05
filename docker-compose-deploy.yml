@@ -1,8 +1,8 @@
 version: "3.9"
 
-services: 
-  app: 
-    build: 
+services:
+  app:
+    build:
       context: .
     restart: always
     volumes:
@@ -14,31 +14,30 @@ services:
       - DB_PASS=${DB_PASS}
       - SECRET_KEY=${DJANGO_SECRET_KEY}
       - ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
-    depends_on: 
+    depends_on:
       - db
 
   db:
     image: postgres:13-alpine
     restart: always
-    volumes: 
+    volumes:
       - postgres-data:/var/lib/postgresql/data
-    environment: 
+    environment:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASS}
 
-  proxy: 
+  proxy:
     build:
       context: ./proxy
-    restart: always 
-    depends_on: 
+    restart: always
+    depends_on:
       - app
     ports:
-      - 8000:8000
+      - 80:8000
     volumes:
       - static-data:/vol/static
 
 volumes:
   postgres-data:
   static-data:
-
